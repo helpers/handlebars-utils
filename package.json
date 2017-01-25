@@ -1,0 +1,54 @@
+{
+  "name": "handlebars-utils",
+  "description": "Utils for handlebars helpers. Externalized from handlebars, to allow helpers to use the utils without having to depend on handlebars itself.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/helpers/handlebars-utils",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "helpers/handlebars-utils",
+  "bugs": {
+    "url": "https://github.com/helpers/handlebars-utils/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "gulp-format-md": "^0.1.11",
+    "handlebars": "^4.0.6",
+    "mocha": "^3.2.0"
+  },
+  "keywords": [
+    "handlebars",
+    "templates",
+    "utils"
+  ],
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "helpers": [
+      "./methods.js"
+    ],
+    "related": {
+      "list": [
+        "handlebars-helpers",
+        "template-helpers"
+      ]
+    },
+    "lint": {
+      "reflinks": true
+    }
+  }
+}
