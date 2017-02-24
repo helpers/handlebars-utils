@@ -273,11 +273,6 @@ utils.options = function(thisArg, locals, options) {
   if (opts[options.name]) {
     opts = Object.assign({}, opts, opts[options.name]);
   }
-
-  if (opts.hasOwnProperty('engine')) {
-    console.log(opts);
-    process.exit();
-  }
   return opts;
 };
 
