@@ -1,7 +1,7 @@
 {
   "name": "handlebars-utils",
   "description": "Utils for handlebars helpers. Externalized from handlebars, to allow helpers to use the utils without having to depend on handlebars itself.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/helpers/handlebars-utils",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "helpers/handlebars-utils",
@@ -50,5 +50,9 @@
     "lint": {
       "reflinks": true
     }
+  },
+  "dependencies": {
+    "kind-of": "^3.1.0",
+    "typeof-article": "^0.1.1"
   }
 }
