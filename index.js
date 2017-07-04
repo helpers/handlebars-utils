@@ -234,7 +234,7 @@ utils.value = function(val, options, context) {
     return utils.value(val, {}, context);
   }
   if (utils.isBlock(options)) {
-    return val != null ? options.fn(context) : options.inverse(context);
+    return !!val ? options.fn(context) : options.inverse(context);
   }
   return val;
 };
@@ -326,8 +326,14 @@ utils.options = function(thisArg, locals, options) {
   if (utils.isOptions(locals)) {
     return utils.options(thisArg, {}, locals);
   }
-  var appOpts = utils.isApp(thisArg) ? thisArg.options : {};
-  return Object.assign({}, appOpts, locals, options.hash);
+  var opts = Object.assign({}, locals, options.hash);
+  if (utils.isObject(thisArg)) {
+    opts = Object.assign({}, thisArg.options, opts);
+  }
+  if (opts[options.name]) {
+    opts = Object.assign({}, opts[options.name], opts);
+  }
+  return opts;
 };
 
 /**
