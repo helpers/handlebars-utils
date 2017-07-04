@@ -1,9 +1,9 @@
 'use strict';
 
 var util = require('util');
+var type = require('typeof-article');
 var typeOf = require('kind-of');
 var utils = exports = module.exports;
-var type = require('typeof-article');
 
 /**
  * This code was taken directly from handlebars.
@@ -70,7 +70,9 @@ utils.isFunction = isFunction;
 
 /* istanbul ignore next */
 var isArray = Array.isArray || function(value) {
-  return value && typeof value === 'object' ? toString.call(value) === '[object Array]' : false;
+  return value && typeof value === 'object'
+    ? toString.call(value) === '[object Array]'
+    : false;
 };
 
 utils.isArray = isArray;
@@ -108,16 +110,6 @@ function escapeExpression(string) {
   return string.replace(badChars, escapeChar);
 }
 
-function isEmpty(value) {
-  if (!value && value !== 0) {
-    return true;
-  } else if (isArray(value) && value.length === 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function createFrame(object) {
   var frame = extend({}, object);
   frame._parent = object;
@@ -147,21 +139,34 @@ utils.expectedType = function(param, expected, actual) {
 /**
  * Returns true if a helper is a block helper.
  *
- * @param {Object} options
+ * ```js
+ * Handlebars.registerHelper('example', function(options) {
+ *   if (utils.isBlock(options)) {
+ *     // do something if this is a block helper
+ *   } else {
+ *     // do something else if this is a not block helper
+ *   }
+ * });
+ * ```
+ * @param {Object} `options` Helper options object
  * @return {Boolean}
  * @api public
  */
 
 utils.isBlock = function(options) {
-  if (!utils.isOptions(options)) {
-    throw new Error('expected a handlebars options object');
-  }
-  return typeof options.fn === 'function' && typeof options.inverse === 'function';
+  return utils.isOptions(options)
+    && typeof options.fn === 'function'
+    && typeof options.inverse === 'function';
 };
 
 /**
  * Returns the given value or renders the block if it's a block helper.
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, locals, options) {
+ *   return utils.fn(val, locals, options);
+ * });
+ * ```
  * @param {any} `val`
  * @param {Object} `options`
  * @param {Object} `context`
@@ -169,13 +174,24 @@ utils.isBlock = function(options) {
  * @api public
  */
 
-utils.fn = function(val, options, context) {
+utils.fn = function(val, context, options) {
+  if (utils.isOptions(val)) {
+    return utils.fn('', val, options);
+  }
+  if (utils.isOptions(context)) {
+    return utils.fn(val, {}, context);
+  }
   return utils.isBlock(options) ? options.fn(context) : val;
 };
 
 /**
  * Returns the given value or renders the inverse block if it's a block helper.
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, locals, options) {
+ *   return utils.inverse(val, locals, options);
+ * });
+ * ```
  * @param {any} `val`
  * @param {Object} `options`
  * @param {Object} `context`
@@ -183,14 +199,26 @@ utils.fn = function(val, options, context) {
  * @api public
  */
 
-utils.inverse = function(val, options, context) {
+utils.inverse = function(val, context, options) {
+  if (utils.isOptions(val)) {
+    return utils.identity('', val, options);
+  }
+  if (utils.isOptions(context)) {
+    return utils.inverse(val, {}, context);
+  }
   return utils.isBlock(options) ? options.inverse(context) : val;
 };
 
 /**
- * Either renders the block or inverse block, if it's a block helper,
- * or if will return `"true"` or `""` if it's an inline helper.
+ * Gets the return value for a helper, by either rendering the block
+ * or inverse block if it's a block helper, or returning the given value
+ * (when truthy) or an empty string (when falsey) if it's a non-block expression.
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, locals, options) {
+ *   return utils.value(val, locals, options);
+ * });
+ * ```
  * @param {any} `val`
  * @param {Object} `options`
  * @param {Object} `context`
@@ -198,47 +226,81 @@ utils.inverse = function(val, options, context) {
  * @api public
  */
 
-utils.getValue = function(val, options, context) {
-  if (utils.isBlock(options)) {
-    return val ? options.fn(context) : options.inverse(context);
+utils.value = function(val, options, context) {
+  if (utils.isOptions(val)) {
+    return utils.value(null, val, options);
   }
-  return val || '';
+  if (utils.isOptions(context)) {
+    return utils.value(val, {}, context);
+  }
+  if (utils.isBlock(options)) {
+    return val != null ? options.fn(context) : options.inverse(context);
+  }
+  return val;
 };
 
 /**
  * Returns true if the given value is a handlebar `options` object.
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, locals, options) {
+ *   if (utils.isOptions(locals)) {
+ *     options = locals;
+ *     locals = {};
+ *   }
+ *   // do stuff
+ * });
+ * ```
  * @param {Object} `val`
  * @return {Boolean}
  * @api public
  */
 
 utils.isOptions = function(val) {
-  return utils.isObject(val) && val.hasOwnProperty('hash');
+  return utils.isObject(val) && utils.isObject(val.hash);
 };
 
 /**
  * Returns true if the given value is `undefined` or is a handlebars
- * options hash.
+ * options hash (which means that a value was not passed by the user).
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, options) {
+ *   if (utils.isUndefined(val)) {
+ *     return '';
+ *   }
+ *   // do stuff
+ * });
+ * ```
  * @param {any} `value`
  * @return {Boolean}
  * @api public
  */
 
 utils.isUndefined = function(val) {
-  return typeof val === 'undefined' || utils.isOptions(val);
+  return val == null || (utils.isOptions(val) && val.hash != null);
 };
 
 /**
- * Returns true if the context was created by the [templates][] library.
+ * Returns true if an `app` propery is on the context, which means
+ * the context was created by [assemble][], [templates][], [verb][],
+ * or any other library that follows this convention.
  *
+ * ```js
+ * Handlebars.registerHelper('example', function(val, options) {
+ *   var context = options.hash;
+ *   if (utils.isApp(this)) {
+ *     context = Object.assign({}, this.context, context);
+ *   }
+ *   // do stuff
+ * });
+ * ```
  * @param {any} `value`
  * @return {Boolean}
  * @api public
  */
 
-utils.isTemplates = function(thisArg) {
+utils.isApp = function(thisArg) {
   return utils.isObject(thisArg)
     && utils.isObject(thisArg.options)
     && utils.isObject(thisArg.app);
@@ -258,27 +320,59 @@ utils.isTemplates = function(thisArg) {
  */
 
 utils.options = function(thisArg, locals, options) {
+  if (utils.isOptions(thisArg)) {
+    return utils.options({}, {}, thisArg);
+  }
   if (utils.isOptions(locals)) {
-    options = locals;
-    locals = {};
+    return utils.options(thisArg, {}, locals);
+  }
+  var appOpts = utils.isApp(thisArg) ? thisArg.options : {};
+  return Object.assign({}, appOpts, locals, options.hash);
+};
+
+/**
+ * Get the context to use for rendering.
+ *
+ * @param {Object} `thisArg` Optional invocation context `this`
+ * @return {Object}
+ * @api public
+ */
+
+utils.context = function(thisArg, locals, options) {
+  if (utils.isOptions(thisArg)) {
+    return utils.context({}, {}, thisArg);
+  }
+  if (utils.isOptions(locals)) {
+    return utils.context(thisArg, {}, locals);
   }
 
-  if (!utils.isOptions(options)) {
-    throw new Error('expected a handlebars options object');
+  var appContext = utils.isApp(thisArg) ? thisArg.context : {};
+  if (options.hash.root === true) {
+    locals = Object.assign({}, options.data.root, locals);
   }
-
-  var appOpts = utils.isTemplates(thisArg) ? thisArg.options : {};
-  var opts = Object.assign({}, appOpts, locals, options.hash);
-
-  if (opts[options.name]) {
-    opts = Object.assign({}, opts, opts[options.name]);
+  var context = Object.assign({}, appContext, locals, options.hash);
+  if (!utils.isApp(thisArg)) {
+    context = Object.assign({}, thisArg, context);
   }
-  return opts;
+  if (thisArg.view && thisArg.view.data) {
+    context = Object.assign({}, context, thisArg.view.data);
+  }
+  return context;
 };
 
 /**
  * Returns true if the given value is an object.
  *
+ * ```js
+ * console.log(utils.isObject(null));
+ * //=> false
+ * console.log(utils.isObject([]));
+ * //=> false
+ * console.log(utils.isObject(function() {}));
+ * //=> false
+ * console.log(utils.isObject({}));
+ * //=> true
+ * ```
  * @param {Object} `val`
  * @return {Boolean}
  * @api public
@@ -301,23 +395,27 @@ utils.isObject = function(val) {
  * console.log(utils.isEmpty({}));
  * //=> true
  * ```
+ * @name .isEmpty
  * @param {any} `value`
  * @return {Boolean}
  * @api public
  */
 
-utils.isEmpty = function(val) {
-  if (val === 0) {
+function isEmpty(val) {
+  if (val === 0 || typeof val === 'boolean') {
     return false;
+  }
+  if (val == null) {
+    return true;
   }
   if (utils.isObject(val)) {
     val = Object.keys(val);
   }
-  if (!val || (Array.isArray(val) && val.length === 0)) {
+  if (!val.length) {
     return true;
   }
   return false;
-};
+}
 
 /**
  * Returns the given value. If the value is a function it will be
@@ -338,7 +436,7 @@ utils.isEmpty = function(val) {
 
 utils.result = function(val) {
   if (typeof val === 'function') {
-    return val.call(this);
+    return val.apply(this, [].slice.call(arguments, 1));
   }
   return val;
 };
@@ -372,7 +470,7 @@ utils.identity = function(val) {
  */
 
 utils.isString = function(val) {
-  return val && typeof val === 'string';
+  return typeof val === 'string' && val !== '';
 };
 
 /**
@@ -392,5 +490,21 @@ utils.isString = function(val) {
  */
 
 utils.arrayify = function(val) {
-  return val ? (Array.isArray(val) ? val : [val]) : [];
+  return val != null ? (Array.isArray(val) ? val : [val]) : [];
+};
+
+/**
+ * Try to parse the given `string` as JSON. Fails
+ * gracefully and always returns an object if the value cannot be parsed.
+ *
+ * @param {String} `string`
+ * @return {Object}
+ * @api public
+ */
+
+utils.tryParse = function(str) {
+  try {
+    return JSON.parse(str);
+  } catch (err) {}
+  return {};
 };
