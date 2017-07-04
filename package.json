@@ -19,10 +19,14 @@
   "scripts": {
     "test": "mocha"
   },
+  "dependencies": {
+    "kind-of": "^5.0.0",
+    "typeof-article": "^0.1.1"
+  },
   "devDependencies": {
-    "gulp-format-md": "^0.1.11",
-    "handlebars": "^4.0.6",
-    "mocha": "^3.2.0"
+    "gulp-format-md": "^1.0.0",
+    "handlebars": "^4.0.10",
+    "mocha": "^3.4.2"
   },
   "keywords": [
     "handlebars",
@@ -30,7 +34,9 @@
     "utils"
   ],
   "verb": {
-    "toc": false,
+    "toc": {
+      "method": "preWrite"
+    },
     "layout": "default",
     "tasks": [
       "readme"
@@ -38,21 +44,21 @@
     "plugins": [
       "gulp-format-md"
     ],
-    "helpers": [
-      "./methods.js"
-    ],
     "related": {
       "list": [
+        "assemble",
+        "templates",
         "handlebars-helpers",
         "template-helpers"
       ]
     },
     "lint": {
       "reflinks": true
-    }
-  },
-  "dependencies": {
-    "kind-of": "^3.1.0",
-    "typeof-article": "^0.1.1"
+    },
+    "reflinks": [
+      "assemble",
+      "templates",
+      "verb"
+    ]
   }
 }
