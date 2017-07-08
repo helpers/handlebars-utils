@@ -226,7 +226,7 @@ utils.inverse = function(val, context, options) {
  * @api public
  */
 
-utils.value = function(val, options, context) {
+utils.value = function(val, context, options) {
   if (utils.isOptions(val)) {
     return utils.value(null, val, options);
   }
@@ -326,6 +326,9 @@ utils.options = function(thisArg, locals, options) {
   if (utils.isOptions(locals)) {
     return utils.options(thisArg, {}, locals);
   }
+  if (!options) {
+    options = {hash: {}, data: {root: {}}};
+  }
   var opts = Object.assign({}, locals, options.hash);
   if (utils.isObject(thisArg)) {
     opts = Object.assign({}, thisArg.options, opts);
@@ -353,6 +356,10 @@ utils.context = function(thisArg, locals, options) {
   }
 
   var appContext = utils.isApp(thisArg) ? thisArg.context : {};
+  if (!options) {
+    options = {hash: {}, data: {root: {}}};
+  }
+
   if (options.hash.root === true) {
     locals = Object.assign({}, options.data.root, locals);
   }
