@@ -1,7 +1,7 @@
 {
   "name": "handlebars-utils",
   "description": "Utils for handlebars helpers. Externalized from handlebars, to allow helpers to use the utils without having to depend on handlebars itself.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/helpers/handlebars-utils",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "helpers/handlebars-utils",
@@ -47,9 +47,9 @@
     "related": {
       "list": [
         "assemble",
-        "templates",
         "handlebars-helpers",
-        "template-helpers"
+        "template-helpers",
+        "templates"
       ]
     },
     "lint": {
