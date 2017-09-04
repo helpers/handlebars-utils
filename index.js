@@ -326,6 +326,7 @@ utils.options = function(thisArg, locals, options) {
   if (utils.isOptions(locals)) {
     return utils.options(thisArg, options, locals);
   }
+  options = options || {};
   if (!utils.isOptions(options)) {
     locals = Object.assign({}, locals, options);
   }
@@ -356,6 +357,7 @@ utils.context = function(thisArg, locals, options) {
     return utils.context(thisArg, options, locals);
   }
   var appContext = utils.isApp(thisArg) ? thisArg.context : {};
+  options = options || {};
 
   // if "options" is not handlebars options, merge it onto locals
   if (!utils.isOptions(options)) {
