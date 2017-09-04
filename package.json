@@ -1,7 +1,7 @@
 {
   "name": "handlebars-utils",
   "description": "Utils for handlebars helpers. Externalized from handlebars, to allow helpers to use the utils without having to depend on handlebars itself.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/helpers/handlebars-utils",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "helpers/handlebars-utils",
@@ -20,13 +20,13 @@
     "test": "mocha"
   },
   "dependencies": {
-    "kind-of": "^5.0.0",
+    "kind-of": "^5.0.2",
     "typeof-article": "^0.1.1"
   },
   "devDependencies": {
     "gulp-format-md": "^1.0.0",
     "handlebars": "^4.0.10",
-    "mocha": "^3.4.2"
+    "mocha": "^3.5.0"
   },
   "keywords": [
     "handlebars",
