@@ -203,7 +203,7 @@ options as well.
 * `options` **{Object}**
 * `returns` **{Boolean}**
 
-### [.context](index.js#L350)
+### [.context](index.js#L351)
 
 Get the context to use for rendering.
 
@@ -212,7 +212,7 @@ Get the context to use for rendering.
 * `thisArg` **{Object}**: Optional invocation context `this`
 * `returns` **{Object}**
 
-### [.isObject](index.js#L396)
+### [.isObject](index.js#L398)
 
 Returns true if the given value is an object.
 
@@ -234,7 +234,7 @@ console.log(utils.isObject({}));
 //=> true
 ```
 
-### [.isEmpty](index.js#L419)
+### [.isEmpty](index.js#L421)
 
 Returns true if the given value is "empty".
 
@@ -256,7 +256,7 @@ console.log(utils.isEmpty({}));
 //=> true
 ```
 
-### [.result](index.js#L452)
+### [.result](index.js#L454)
 
 Returns the given value. If the value is a function it will be called with the current context, otherwise the value is returned.
 
@@ -276,7 +276,7 @@ console.log(utils.result(function() {
 //=> 'foo'
 ```
 
-### [.identity](index.js#L475)
+### [.identity](index.js#L477)
 
 Returns the given value as-is, unchanged.
 
@@ -296,7 +296,7 @@ console.log(utils.result(function() {
 //=> [function]
 ```
 
-### [.isString](index.js#L487)
+### [.isString](index.js#L489)
 
 Return true if `val` is a non-empty string.
 
@@ -305,7 +305,7 @@ Return true if `val` is a non-empty string.
 * `val` **{any}**: The value to check
 * `returns` **{Boolean}**
 
-### [.arrayify](index.js#L507)
+### [.arrayify](index.js#L509)
 
 Cast the given `val` to an array.
 
@@ -325,7 +325,7 @@ console.log(utils.arrayify(['foo']));
 //=> ['foo']
 ```
 
-### [.tryParse](index.js#L520)
+### [.tryParse](index.js#L522)
 
 Try to parse the given `string` as JSON. Fails
 gracefully and always returns an object if the value cannot be parsed.
