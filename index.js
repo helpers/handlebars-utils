@@ -321,16 +321,16 @@ utils.isApp = function(thisArg) {
 
 utils.options = function(thisArg, locals, options) {
   if (utils.isOptions(thisArg)) {
-    return utils.options({}, {}, thisArg);
+    return utils.options({}, locals, thisArg);
   }
   if (utils.isOptions(locals)) {
-    return utils.options(thisArg, {}, locals);
+    return utils.options(thisArg, options, locals);
   }
-  if (!options) {
-    options = {hash: {}, data: {root: {}}};
+  if (!utils.isOptions(options)) {
+    locals = Object.assign({}, locals, options);
   }
   var opts = Object.assign({}, locals, options.hash);
-  if (utils.isObject(thisArg)) {
+  if (utils.isApp(thisArg)) {
     opts = Object.assign({}, thisArg.options, opts);
   }
   if (opts[options.name]) {
@@ -349,25 +349,27 @@ utils.options = function(thisArg, locals, options) {
 
 utils.context = function(thisArg, locals, options) {
   if (utils.isOptions(thisArg)) {
-    return utils.context({}, {}, thisArg);
+    return utils.context({}, locals, thisArg);
   }
+  // ensure args are in the correct order
   if (utils.isOptions(locals)) {
-    return utils.context(thisArg, {}, locals);
+    return utils.context(thisArg, options, locals);
   }
-
   var appContext = utils.isApp(thisArg) ? thisArg.context : {};
-  if (!options) {
-    options = {hash: {}, data: {root: {}}};
-  }
 
-  if (options.hash.root === true) {
+  // if "options" is not handlebars options, merge it onto locals
+  if (!utils.isOptions(options)) {
+    locals = Object.assign({}, locals, options);
+  }
+  // merge handlebars root data onto locals if specified on the hash
+  if (utils.isOptions(options) && options.hash.root === true) {
     locals = Object.assign({}, options.data.root, locals);
   }
   var context = Object.assign({}, appContext, locals, options.hash);
   if (!utils.isApp(thisArg)) {
     context = Object.assign({}, thisArg, context);
   }
-  if (thisArg.view && thisArg.view.data) {
+  if (utils.isApp(thisArg) && thisArg.view && thisArg.view.data) {
     context = Object.assign({}, context, thisArg.view.data);
   }
   return context;
