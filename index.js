@@ -133,7 +133,7 @@ function appendContextPath(contextPath, id) {
 utils.expectedType = function(param, expected, actual) {
   var exp = type.types[expected];
   var val = util.inspect(actual);
-  return `expected ${param} to be ${exp} but received ${type(actual)}: ${val}`;
+  return "expected " + param + " to be " + exp + " but received " + type(actual) + ": " + val;
 };
 
 /**
