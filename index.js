@@ -331,7 +331,7 @@ utils.options = function(thisArg, locals, options) {
     locals = Object.assign({}, locals, options);
   }
   var opts = Object.assign({}, locals, options.hash);
-  if (utils.isApp(thisArg)) {
+  if (utils.isObject(thisArg)) {
     opts = Object.assign({}, thisArg.options, opts);
   }
   if (opts[options.name]) {
