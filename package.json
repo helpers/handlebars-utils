@@ -14,22 +14,23 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=0.10.0"
   },
   "scripts": {
     "test": "mocha"
   },
   "dependencies": {
-    "kind-of": "^5.0.2",
+    "kind-of": "^6.0.0",
     "typeof-article": "^0.1.1"
   },
   "devDependencies": {
     "gulp-format-md": "^1.0.0",
-    "handlebars": "^4.0.10",
-    "mocha": "^3.5.0"
+    "handlebars": "^4.0.11",
+    "mocha": "3.5.2"
   },
   "keywords": [
     "handlebars",
+    "helpers",
     "templates",
     "utils"
   ],
